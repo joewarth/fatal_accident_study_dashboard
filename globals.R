@@ -7,6 +7,7 @@ library(DT)
 library(markdown)
 library(xgboost)
 library(ggplot2)
+library(caret)
 
 # ---- Parameters ------------------------------------------------------
 param_model_path <- "model/outXgbLogistic.RDS"
