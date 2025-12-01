@@ -1,7 +1,7 @@
 # ui.R
 source("./globals.R")
 
-dashboardPage(
+ui <- dashboardPage(
   dashboardHeader(
     title = "Fatal Accidents Study Dashboard"
   ),

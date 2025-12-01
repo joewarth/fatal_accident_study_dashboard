@@ -142,5 +142,3 @@ POSITION_SIDE_CHOICES <- c(
   "Passenger Side",
   "Middle & Other"
 )
-
-shiny::runApp(".")
