@@ -254,4 +254,83 @@ server <- function(input, output, session) {
       color = "red"
     )
   })
+  
+
+  
+  output$roc_plot <- renderPlot({
+    df <- roc_data
+    thr <- input$threshold
+    
+    idx <- which.min(abs(df$threshold - thr))
+    pt <- df[idx, , drop = FALSE]
+    ggplot(df, aes(x = fpr, y = tpr)) +
+      geom_line() +
+      geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+      geom_point(data = pt, size = 3, color = "red") +
+      coord_equal() + 
+      labs(
+        x = "False Positive Rate (1 - Specificity)",
+        y = "True Positive Rate (Sensitivity)",
+        title = "ROC Curve: Test Dataset",
+        subtitle = paste0(
+          "Threshold ~ ", sprintf("%.2f", thr),
+          " | TPR = ", sprintf("%.2f", pt$tpr),
+          " | FPR = ", sprintf("%.2f", pt$fpr)
+        )
+      ) +
+      theme_minimal(base_size = 12)
+  })
+  
+  cm_obj <- reactive({
+    scores <- model_scores
+    thr    <- input$threshold
+    
+    # Binary predictions at chosen threshold
+    pred_class <- ifelse(scores$prob >= thr, 1, 0)
+    y          <- scores$y_true
+    
+    # Turn both into factors with consistent levels
+    # levels: c(1, 0) = c("Event", "Non-Event")
+    pred_fac <- factor(pred_class, levels = c(1, 0), labels = c("Event", "Non-Event"))
+    act_fac  <- factor(y,          levels = c(1, 0), labels = c("Event", "Non-Event"))
+    
+    # caret::confusionMatrix:
+    #   data      = predictions
+    #   reference = actuals
+    #   positive  = which level is the "event" class
+    caret::confusionMatrix(
+      data      = pred_fac,
+      reference = act_fac,
+      positive  = "Event"
+    )
+  })
+  
+  output$cm_table <- renderTable({
+    cm <- cm_obj()
+    
+    df <- as.data.frame.matrix(cm$table)
+    
+    # Add an explicit "Actual" column
+    df <- cbind(Actual = rownames(df), df)
+    
+    # Rename the prediction columns
+    colnames(df) <- c("Actual", "Pred: Event", "Pred: Non-Event")
+    
+    df
+  }, rownames = FALSE)
+  
+  output$cm_metrics <- renderTable({
+    cm <- cm_obj()
+    
+    acc  <- unname(cm$overall["Accuracy"])
+    sens <- unname(cm$byClass["Sensitivity"])
+    spec <- unname(cm$byClass["Specificity"])
+    
+    df <- data.frame(
+      Metric = c("Accuracy", "Sensitivity", "Specificity"),
+      Value  = sprintf("%.3f", c(acc, sens, spec))
+    )
+    
+    df
+  }, rownames = FALSE)
 }

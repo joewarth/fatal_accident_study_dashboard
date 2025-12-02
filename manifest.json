@@ -3197,8 +3197,17 @@
     "app.R": {
       "checksum": "ce5340996697a3d7b159bd06bf929ec6"
     },
+    "data/Xtest.RDS": {
+      "checksum": "795bbea95ba62ccf9c760e68ca89b529"
+    },
+    "data/Ytest.RDS": {
+      "checksum": "dd61c2f2b94f55b48014506355d7bbe3"
+    },
+    "faq.md": {
+      "checksum": "e89070264834ee9fa038a773d6a8ea50"
+    },
     "globals.R": {
-      "checksum": "3429c53fb56b37a9f5e0223c622d7a53"
+      "checksum": "7234b1293afb766f4750abc1f4fad6e3"
     },
     "model/dummyModel.RDS": {
       "checksum": "992ec8bb0f718dd3627a023eae7f164f"
@@ -3216,10 +3225,10 @@
       "checksum": "55612fd19f885ca18738abe98042dbb5"
     },
     "server.R": {
-      "checksum": "c9d025dc395b25e0881cb820c07a45bc"
+      "checksum": "4469928dcad882c5882ad7f8d76f9630"
     },
     "ui.R": {
-      "checksum": "e0650a78f0f4eabe9e0101780fac3eac"
+      "checksum": "a2adb3bb492501e2fa557cbb4c20fbc4"
     }
   },
   "users": null

@@ -8,18 +8,36 @@ library(markdown)
 library(xgboost)
 library(ggplot2)
 library(caret)
+library(pROC)
 
 # ---- Parameters ------------------------------------------------------
 param_model_path <- "model/outXgbLogistic.RDS"
 param_pp_yeoj_path <- "model/pp_yeoj.RDS"
 param_pp_median <- "model/pp_median.RDS"
 param_pp_qual <- "model/dummyModel.RDS"
+param_xtest_path <- "data/Xtest.RDS"
+param_ytest_path <- "data/Ytest.RDS"
 
 # ---- Import model ----------------------------------------------------
 model <- readRDS(param_model_path)
 pp_yeoj <- readRDS(param_pp_yeoj_path)
 pp_median <- readRDS(param_pp_median)
 pp_qual <- readRDS(param_pp_qual)
+Xtest <- readRDS(param_xtest_path)
+Ytest <- readRDS(param_ytest_path)
+
+# ---- Test Data ROC calc ----------------------------------------------
+probs <- predict(model, newdata = Xtest, type = "prob")[, 2]
+roc_obj <- pROC::roc(response = Ytest, predictor = probs, quiet = TRUE)
+roc_data <- data.frame(
+  fpr = 1 - roc_obj$specificities,
+  tpr = roc_obj$sensitivities,
+  threshold = roc_obj$thresholds
+)
+model_scores <- data.frame(
+  y_true = Ytest,
+  prob = probs
+)
 
 # ---- Field Lists -----------------------------------------------------
 WEATHER_CHOICES <- c(

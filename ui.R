@@ -16,6 +16,15 @@ ui <- dashboardPage(
         "Predicted Probability of Fatality",
         tabName = "predProb",
         icon = icon("table")
+      ),
+      menuItem(
+        "Model Performance on Test Data",
+        tabName = "confMatrix",
+        icon = icon("magnifying-glass")
+      ),
+      menuItem(
+        "FAQ",
+        tabName = "faq"
       )
     )
   ),
@@ -306,7 +315,48 @@ ui <- dashboardPage(
         fluidRow(
           valueBoxOutput("pred_box", width = 4)
         )
+      ),
+      
+      # --- Confusion Matrix tab ---------------------------------------------------
+      tabItem(
+        tabName = "confMatrix",
+        fluidRow(
+          sliderInput(
+            "threshold",
+            "Choose a Threshold:",
+            min   = 0.01,
+            max   = 0.99,
+            value = 0.50,
+            step = 0.01
+          )
+        ),
+        fluidRow(
+          box(
+            title = "ROC Curve",
+            width = 12,
+            plotOutput("roc_plot", height = "400px")
+          )
+        ),
+        fluidRow(
+          box(
+            title = "Confusion matrix at selected threshold: Test Dataset",
+            width = 6,
+            tableOutput("cm_table")
+          ),
+          box(
+            title = "Performance metrics: Test Dataset",
+            width = 6,
+            tableOutput("cm_metrics")
+          )
+        )
+      ),
+      
+      tabItem(
+        tabName = "faq",
+        includeMarkdown("./faq.md")
       )
+      
+      
     )
   )
 )
