@@ -290,18 +290,14 @@ server <- function(input, output, session) {
     y          <- scores$y_true
     
     # Turn both into factors with consistent levels
-    # levels: c(1, 0) = c("Event", "Non-Event")
-    pred_fac <- factor(pred_class, levels = c(1, 0), labels = c("Event", "Non-Event"))
-    act_fac  <- factor(y,          levels = c(1, 0), labels = c("Event", "Non-Event"))
+    # levels: c(1, 0) = c("Fatality", "Non-Fatality")
+    pred_fac <- factor(pred_class, levels = c(1, 0), labels = c("Fatality", "Non-Fatality"))
+    act_fac  <- factor(y,          levels = c(1, 0), labels = c("Fatality", "Non-Fatality"))
     
-    # caret::confusionMatrix:
-    #   data      = predictions
-    #   reference = actuals
-    #   positive  = which level is the "event" class
     caret::confusionMatrix(
       data      = pred_fac,
       reference = act_fac,
-      positive  = "Event"
+      positive  = "Fatality"
     )
   })
   
@@ -314,7 +310,7 @@ server <- function(input, output, session) {
     df <- cbind(Actual = rownames(df), df)
     
     # Rename the prediction columns
-    colnames(df) <- c("Actual", "Pred: Event", "Pred: Non-Event")
+    colnames(df) <- c("Actual", "Pred: Fatality", "Pred: Non-Fatality")
     
     df
   }, rownames = FALSE)
